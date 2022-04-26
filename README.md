@@ -1,0 +1,9 @@
+# Ktran
+
+用 Kotlin/Native 实现的端口转发工具（参考 lcx），仅用于学习
+
+理论上在 Windows、Linux、macOS 都可以编译成原生应用，但我只在 macOS 尝试过
+
+编译：`./gradlew assemble`
+
+可执行文件：`build/bin/native/releaseExecutable/ktran.kexe`
