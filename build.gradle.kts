@@ -20,10 +20,14 @@ kotlin {
     }
 
     nativeTarget.apply {
+        compilations["main"].cinterops.create("setsockopt") {
+            defFile(project.file("src/nativeMain/cinterop/setsockopt.def"))
+        }
+
         binaries {
             executable {
                 entryPoint = "main"
-                runTask?.args("--test")
+                runTask?.args("--help")
             }
         }
     }

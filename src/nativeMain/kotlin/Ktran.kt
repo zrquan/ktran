@@ -57,11 +57,8 @@ class Server(val port: Int, val backlog: Int = 50) {
         .ensureResult("create socket") { it != -1 }
 
     init {
-//        memScoped {
-//            val flag = alloc<IntVar>()
-//            flag.value = 1
-//            setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, flag.ptr, sizeOf<IntVar>().convert())
-//        }
+        // 允许重复绑定端口
+        ktran.socket.enable_reuse(listenFd)
         serverAddr.bind(listenFd)
     }
 

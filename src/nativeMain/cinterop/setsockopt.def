@@ -1,0 +1,11 @@
+package = ktran.socket
+
+---
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
+void enable_reuse(int socket) {
+    int flag = 1;
+    setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (const void*)&flag, sizeof(flag));
+}
