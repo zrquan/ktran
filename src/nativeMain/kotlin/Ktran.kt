@@ -11,15 +11,15 @@ fun main(vararg args: String) {
 
     when (args[0]) {
         "-l", "--listen" -> {
-            println("[+] Enable listen mode")
+            println("[+] Enable listen mode".green())
             _listen(args[1].toInt(), args[2].toInt())
         }
         "-t", "--tran" -> {
-            println("[+] Enable transfer mode")
+            println("[+] Enable transfer mode".green())
             _transfer(args[1].toInt(), args[2], args[3].toInt())
         }
         "-s", "--slave" -> {
-            println("[+] Enable slave mode")
+            println("[+] Enable slave mode".green())
             _slave(args[1], args[2].toInt(), args[3], args[4].toInt())
         }
         else -> printUsage()
@@ -123,7 +123,7 @@ private fun _listen(srcPort: Int, dstPort: Int) {
         val src = srcSocket.accept()
         val dst = dstSocket.accept()
         if (src.fd == -1 || dst.fd == -1) {
-            println("[x] Accept socket failed, retry 5s later")
+            println("[x] Accept socket failed, retry 5s later".red())
             sleep(5)
             continue
         }
@@ -137,7 +137,7 @@ private fun _transfer(srcPort: Int, dstHost: String, dstPort: Int) {
         val src = srcSocket.accept()
         val dst = Client(dstHost, dstPort).connect()
         if (src.fd == -1 || dst.fd == -1) {
-            println("[x] Accept socket failed, retry 5s later")
+            println("[x] Accept socket failed, retry 5s later".red())
             sleep(5)
             continue
         }
@@ -150,7 +150,7 @@ private fun _slave(srcHost: String, srcPort: Int, dstHost: String, dstPort: Int)
         val src = Client(srcHost, srcPort).connect()
         val dst = Client(dstHost, dstPort).connect()
         if (src.fd == -1 || dst.fd == -1) {
-            println("[x] Accept socket failed, retry 5s later")
+            println("[x] Accept socket failed, retry 5s later".red())
             sleep(5)
             continue
         }
@@ -186,9 +186,9 @@ fun transData(so1: Socket, so2: Socket) {
                         totalLen += dataLen
                         val other = socks[(i + 1) % 2]
                         send(other.fd, pinned.addressOf(0), dataLen.convert(), 0)
-                        println("[+] Send: ${socks[i].peernameWithPort()} -> ${other.peernameWithPort()}, $dataLen bytes")
+                        println("[+] Send: ${socks[i].peernameWithPort()} -> ${other.peernameWithPort()}, $dataLen bytes".blue())
                     } else {
-                        println("[-] Connection shutdown. Total: $totalLen bytes")
+                        println("[-] Connection shutdown. Total: $totalLen bytes".red())
                         return@usePinned
                     }
                 }
@@ -196,3 +196,7 @@ fun transData(so1: Socket, so2: Socket) {
         }
     }
 }
+
+fun String.red() = "\u001B[31m$this\u001B[0m"
+fun String.blue() = "\u001B[34m$this\u001B[0m"
+fun String.green() = "\u001B[32m$this\u001B[0m"
