@@ -2,8 +2,11 @@ package = ktran.socket
 
 ---
 
-#include <sys/types.h>
+#ifdef _WIN32
+#include <winsock.h>
+#else
 #include <sys/socket.h>
+#endif
 
 void enable_reuse(int socket) {
     int flag = 1;
