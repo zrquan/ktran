@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.6.10"
+    kotlin("multiplatform") version "1.6.20"
 }
 
 group = "me.zrquan"
@@ -10,28 +10,55 @@ repositories {
 }
 
 kotlin {
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
-
-    nativeTarget.apply {
-        compilations["main"].cinterops.create("setsockopt") {
-            defFile(project.file("src/nativeMain/cinterop/setsockopt.def"))
+    macosX64 {
+        compilations.getByName("main") {
+            cinterops {
+                val setsockopt by creating
+            }
         }
-
         binaries {
             executable {
                 entryPoint = "main"
-                runTask?.args("--help")
+            }
+        }
+    }
+    linuxX64 {
+        compilations.getByName("main") {
+            cinterops {
+                val setsockopt by creating
+            }
+        }
+        binaries {
+            executable {
+                entryPoint = "main"
+            }
+        }
+    }
+    mingwX64 {
+        compilations.getByName("main") {
+            cinterops {
+                val setsockopt by creating
+            }
+        }
+        binaries {
+            executable {
+                entryPoint = "main"
             }
         }
     }
     sourceSets {
-        val nativeMain by getting
+        val commonMain by getting
+        val posixMain by creating {
+            dependsOn(commonMain)
+        }
+        val macosX64Main by getting {
+            dependsOn(posixMain)
+        }
+        val linuxX64Main by getting {
+            dependsOn(posixMain)
+        }
+        val mingwX64Main by getting {
+            dependsOn(posixMain)
+        }
     }
 }
